@@ -1,11 +1,24 @@
 import { S3 } from 'aws-sdk'
 import { parseAsync } from 'json2csv';
 import csv = require('csvtojson');
+import { APIGatewayEvent } from 'aws-lambda';
 
 const s3ParseUrl = require('s3-url-parser');
 
-export async function splitter(url: string) {
+export const handler = async function (event: APIGatewayEvent) {
     try {
+        let url: string;
+        if (event.body !== null && event.body !== undefined) {
+            let body = JSON.parse(event.body)
+            if (body.url)
+                url = body.url;
+        }
+        if (url) {
+            return {
+                statusCode: 401,
+                body: "Url Required"
+            }
+        }
         const s3 = new S3();
         let params: { Bucket: string, Key: string };
         const splitMap: Map<string, Object[]> = new Map();
@@ -47,8 +60,14 @@ export async function splitter(url: string) {
             }
             await s3.putObject(putParams).promise();
         }
-        return "splitted to .csv files";
+        return {
+            statusCode: 200,
+            body: "splitted to .csv files"
+        };
     } catch (err) {
-        return err.toString();
+        return {
+            statusCode: 500,
+            body: err.toString()
+        };
     }
 }

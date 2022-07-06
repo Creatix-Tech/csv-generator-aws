@@ -1,6 +1,6 @@
 org: koryun
 app: aws-node-project
-service: aws-node-project-splitter
+service: splitter
 
 frameworkVersion: '3'
 
@@ -13,8 +13,8 @@ package:
     - src/**
 
 functions:
-  splits:
-    handler: dist/app.handler
+  split:
+    handler: dist/service.handler
     events:
      - http: 
           path: /
