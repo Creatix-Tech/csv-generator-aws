@@ -1,0 +1,24 @@
+org: koryun
+app: aws-node-project
+service: aws-node-project-splitter
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+package:
+  exclude:
+    - src/**
+
+functions:
+  splits:
+    handler: dist/app.handler
+    events:
+     - http: 
+          path: /
+          method: POST
+
+
+
